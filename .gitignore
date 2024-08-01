@@ -1,0 +1,21 @@
+# OSX
+.DS_Store
+
+# node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Editors
+.idea/
+.vscode/
+
+# .lock files
+package-lock.json
+yarn.lock
+
+# Bundle
+build/
+
+#Generated folder
+__generated

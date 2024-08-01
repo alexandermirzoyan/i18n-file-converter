@@ -1,0 +1,4 @@
+{
+  "title": "i18n File Converter",
+  "description": "This package converts .json files to Excel, facilitating the easy maintenance of translations for both development and product teams."
+}

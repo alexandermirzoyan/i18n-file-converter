@@ -1,0 +1,12 @@
+{
+  "hello": "Hello",
+  "world": "World",
+  "helloWorld": "Hello World",
+  "foo": {
+    "foo1": "Foo",
+    "foo2": "Generate excel with ease",
+    "boo": {
+      "boo1": "IDK"
+    }
+  }
+}
