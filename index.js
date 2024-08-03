@@ -10,10 +10,10 @@ const getJsonData = async (filePath) => {
 const generateExcel = async ({ fileNames, config }) => {
   const workbook = XLSX.utils.book_new();
   const {
-    keyTitle,
-    targetLanguageTitle,
+    keyTitle = 'Translation Key',
+    targetLanguageTitle = 'Target language',
     otherLanguageTitles,
-    width,
+    width = 80,
   } = config?.column || {};
 
   for (const fileName of fileNames) {
@@ -26,14 +26,14 @@ const generateExcel = async ({ fileNames, config }) => {
       });
 
       return {
-        [keyTitle || 'Translation Key']: key,
-        [targetLanguageTitle || 'Target language']: value,
+        [keyTitle]: key,
+        [targetLanguageTitle]: value,
         ...otherColumns,
       };
     });
 
     const otherLanguageTitlesLength = otherLanguageTitles?.length || 0;
-    const columnWidths = new Array(2 + otherLanguageTitlesLength).fill({ wch: width || 80 });
+    const columnWidths = new Array(2 + otherLanguageTitlesLength).fill({ wch: width });
 
     const worksheet = XLSX.utils.json_to_sheet(data);
     worksheet['!cols'] = columnWidths;
