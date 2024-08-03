@@ -9,7 +9,12 @@ const getJsonData = async (filePath) => {
 
 const generateExcel = async ({ fileNames, config }) => {
   const workbook = XLSX.utils.book_new();
-  const { keyTitle, targetLanguageTitle, otherLanguageTitles } = config?.column || {};
+  const {
+    keyTitle,
+    targetLanguageTitle,
+    otherLanguageTitles,
+    width,
+  } = config?.column || {};
 
   for (const fileName of fileNames) {
     const jsonData = await getJsonData(`${__dirname}/locales/${fileName}.json`);
@@ -28,7 +33,7 @@ const generateExcel = async ({ fileNames, config }) => {
     });
 
     const otherLanguageTitlesLength = otherLanguageTitles?.length || 0;
-    const columnWidths = new Array(2 + otherLanguageTitlesLength).fill({ wch: 80 });
+    const columnWidths = new Array(2 + otherLanguageTitlesLength).fill({ wch: width || 80 });
 
     const worksheet = XLSX.utils.json_to_sheet(data);
     worksheet['!cols'] = columnWidths;
@@ -47,6 +52,7 @@ generateExcel({
   config: {
     column: {
       keyTitle: 'Key',
+      width: 80,
       targetLanguageTitle: 'English Translation',
       otherLanguageTitles: ['Arabic Translation', 'Spanish Translation'],
     },
