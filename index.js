@@ -7,31 +7,36 @@ const getJsonData = async (filePath) => {
   return JSON.parse(fs.readFileSync(filePath));
 };
 
-const generateExcel = async ({ fileNames }) => {
+const generateExcel = async ({ fileNames, config }) => {
   const workbook = XLSX.utils.book_new();
+  const { keyTitle, targetLanguageTitle, otherLanguageTitles } = config?.column || {};
 
   for (const fileName of fileNames) {
     const jsonData = await getJsonData(`${__dirname}/locales/${fileName}.json`);
     const flattenedObject = flattenObject(jsonData);
-    const data = Object.entries(flattenedObject).map(([key, value]) => ({
-      'Translation Key': key,
-      'English Translation': value,
-      'Arabic Translation': '',
-    }));
+    const data = Object.entries(flattenedObject).map(([key, value]) => {
+      const otherColumns = {};
+      otherLanguageTitles?.forEach((title) => {
+        otherColumns[title] = '';
+      });
 
-    const columnWidths = [
-      { wch: 80 },
-      { wch: 80 },
-      { wch: 80 },
-    ];
+      return {
+        [keyTitle || 'Translation Key']: key,
+        [targetLanguageTitle || 'Target language']: value,
+        ...otherColumns,
+      };
+    });
+
+    const otherLanguageTitlesLength = otherLanguageTitles?.length || 0;
+    const columnWidths = new Array(2 + otherLanguageTitlesLength).fill({ wch: 80 });
 
     const worksheet = XLSX.utils.json_to_sheet(data);
     worksheet['!cols'] = columnWidths;
-    
+
     XLSX.utils.book_append_sheet(workbook, worksheet, fileName);
   }
 
-  const buffer = XLSX.write(workbook, { bookType: "xlsx", type: "buffer" });
+  const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' });
 
   fs.writeFileSync(__dirname + `/${GENERATION_FOLDER_NAME}/locales.xlsx`, buffer);
   console.log('File saved!');
@@ -39,4 +44,11 @@ const generateExcel = async ({ fileNames }) => {
 
 generateExcel({
   fileNames: ['locale-file-1', 'locale-file-2'],
+  config: {
+    column: {
+      keyTitle: 'Key',
+      targetLanguageTitle: 'English Translation',
+      otherLanguageTitles: ['Arabic Translation', 'Spanish Translation'],
+    },
+  },
 });
