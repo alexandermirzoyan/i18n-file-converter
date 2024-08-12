@@ -7,38 +7,36 @@ const getJsonData = async (filePath) => {
   return JSON.parse(fs.readFileSync(filePath));
 };
 
-const json2xlsx = async ({ fileNames, config }) => {
+const json2xlsx = async ({ localesFolderPath, config }) => {
+  const localeSubFolders = fs.readdirSync(localesFolderPath);
+
+  if (!localeSubFolders.length) {
+    throw Error('No locales found');
+  }
+
+  const defaultLocale = localeSubFolders[0];
+  const restLocales = localeSubFolders.filter((folder) => folder !== defaultLocale);
+  const defaultLocaleFiles = fs.readdirSync(`${localesFolderPath}/${defaultLocale}`);
+  const { keyTitle = 'Translation Key', width = 80 } = config?.column || {};
   const workbook = XLSX.utils.book_new();
-  const {
-    keyTitle = 'Translation Key',
-    targetLanguageTitle = 'Target language',
-    otherLanguageTitles,
-    width = 80,
-  } = config?.column || {};
 
-  for (const fileName of fileNames) {
-    const jsonData = await getJsonData(`${__dirname}/locales/en/${fileName}.json`);
+  for (const file of defaultLocaleFiles) {
+    const jsonData = await getJsonData(`${localesFolderPath}/${defaultLocale}/${file}`);
     const flattenedObject = flattenObject(jsonData);
-    const data = Object.entries(flattenedObject).map(([key, value]) => {
-      const otherColumns = {};
-      otherLanguageTitles?.forEach((title) => {
-        otherColumns[title] = '';
+    const data = Object.entries(flattenedObject).map(([key, value]) => ({ [keyTitle]: key, [defaultLocale]: value }));
+
+    for (const otherLocale of restLocales) {
+      const jsonData = await getJsonData(`${localesFolderPath}/${otherLocale}/${file}`);
+      const flattenedObject = flattenObject(jsonData);
+      Object.entries(flattenedObject).forEach(([key, value]) => {
+        const foundIndex = data.findIndex((item) => item[keyTitle] === key);
+        data[foundIndex][otherLocale] = value;
       });
-
-      return {
-        [keyTitle]: key,
-        [targetLanguageTitle]: value,
-        ...otherColumns,
-      };
-    });
-
-    const otherLanguageTitlesLength = otherLanguageTitles?.length || 0;
-    const columnWidths = new Array(2 + otherLanguageTitlesLength).fill({ wch: width });
+    }
 
     const worksheet = XLSX.utils.json_to_sheet(data);
-    worksheet['!cols'] = columnWidths;
-
-    XLSX.utils.book_append_sheet(workbook, worksheet, fileName);
+    worksheet['!cols'] = new Array(data.length).fill({ wch: width });
+    XLSX.utils.book_append_sheet(workbook, worksheet, file);
   }
 
   const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' });

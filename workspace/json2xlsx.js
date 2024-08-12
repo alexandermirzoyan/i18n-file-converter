@@ -1,13 +1,9 @@
+const path = require('path');
 const { json2xlsx } = require('../index');
 
 json2xlsx({
-  fileNames: ['locale-file-1', 'locale-file-2'],
+  localesFolderPath: path.resolve(__dirname, '../locales'),
   config: {
-    column: {
-      keyTitle: 'Key',
-      width: 80,
-      targetLanguageTitle: 'English Translation',
-      otherLanguageTitles: ['Arabic Translation', 'Spanish Translation'],
-    },
+    column: { keyTitle: 'Key', width: 80 },
   },
 });
