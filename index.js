@@ -17,7 +17,7 @@ const json2xlsx = async ({ fileNames, config }) => {
   } = config?.column || {};
 
   for (const fileName of fileNames) {
-    const jsonData = await getJsonData(`${__dirname}/locales/${fileName}.json`);
+    const jsonData = await getJsonData(`${__dirname}/locales/en/${fileName}.json`);
     const flattenedObject = flattenObject(jsonData);
     const data = Object.entries(flattenedObject).map(([key, value]) => {
       const otherColumns = {};

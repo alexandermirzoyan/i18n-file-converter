@@ -1,0 +1,4 @@
+{
+  "title": "Convertidor de archivos i18n",
+  "description": "Este paquete convierte archivos .json a Excel, lo que facilita el mantenimiento de las traducciones para los equipos de desarrollo y de producto."
+}
