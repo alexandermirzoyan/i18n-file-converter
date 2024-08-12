@@ -7,7 +7,7 @@ const getJsonData = async (filePath) => {
   return JSON.parse(fs.readFileSync(filePath));
 };
 
-const xlsx2json = async ({ fileNames, config }) => {
+const json2xlsx = async ({ fileNames, config }) => {
   const workbook = XLSX.utils.book_new();
   const {
     keyTitle = 'Translation Key',
@@ -47,41 +47,17 @@ const xlsx2json = async ({ fileNames, config }) => {
   console.log('File saved!');
 };
 
-const json2xlsx = ({ fileName, config }) => {
+const xlsx2json = ({ fileName, config }) => {
   const workbook = XLSX.readFile(`${__dirname}/${fileName}`);
   const { keyTitle, columnTitlesAndLocaleCodes } = config?.column || {};
 
   for (const sheetName of workbook.SheetNames) {
     const worksheet = workbook.Sheets[sheetName];
-    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+    const jsonSheet = XLSX.utils.sheet_to_json(worksheet);
     console.log('sheetName :: ', sheetName);
-    console.log(jsonData);
+    console.log('jsonSheet :: ', jsonSheet);
     console.log('=========');
   }
 };
 
-/*xlsx2json({
-  fileNames: ['locale-file-1', 'locale-file-2'],
-  config: {
-    column: {
-      keyTitle: 'Key',
-      width: 80,
-      targetLanguageTitle: 'English Translation',
-      otherLanguageTitles: ['Arabic Translation', 'Spanish Translation'],
-    },
-  },
-});*/
-
-json2xlsx({
-  fileName: '__generated/locales.xlsx',
-  config: {
-    column: {
-      keyTitle: 'Key',
-      columnTitlesAndLocaleCodes: {
-        'English Translation': 'en',
-        'Arabic Translation': 'ar',
-        'Spanish Translation': 'es',
-      },
-    },
-  },
-});
+module.exports = { xlsx2json, json2xlsx };
