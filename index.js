@@ -1,6 +1,7 @@
 const fs = require('fs');
 const XLSX = require('xlsx');
 const { flattenObject } = require('./utils/flattenObject');
+const { deepenObject } = require('./utils/deepenObject');
 
 const getJsonData = async (filePath) => {
   return JSON.parse(fs.readFileSync(filePath));
@@ -44,15 +45,33 @@ const json2xlsx = async ({ inputPath, outputPath, config }) => {
   console.log('File saved!');
 };
 
-const xlsx2json = ({ fileName, config }) => {
-  const workbook = XLSX.readFile(`${__dirname}/${fileName}`);
+const xlsx2json = ({ inputPath, config }) => {
+  const workbook = XLSX.readFile(inputPath);
   const { keyTitle, columnTitlesAndLocaleCodes } = config?.column || {};
 
   for (const sheetName of workbook.SheetNames) {
+    const locales = {};
     const worksheet = workbook.Sheets[sheetName];
     const jsonSheet = XLSX.utils.sheet_to_json(worksheet);
-    console.log('sheetName :: ', sheetName);
-    console.log('jsonSheet :: ', jsonSheet);
+
+    jsonSheet.forEach((row) => {
+      const key = row[keyTitle];
+      delete row[keyTitle];
+      Object.entries(row).map(([locale, value]) => {
+        if (!locales[locale]) {
+          locales[locale] = {};
+        }
+
+        locales[locale][key] = value;
+      });
+    });
+
+    for (const locale in locales) {
+      const deepenedObject = deepenObject(locales[locale]);
+      console.log(deepenedObject);
+    }
+
+    console.log('locales :: ', locales);
     console.log('=========');
   }
 };
