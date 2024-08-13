@@ -1,14 +1,13 @@
 const fs = require('fs');
 const XLSX = require('xlsx');
 const { flattenObject } = require('./utils/flattenObject');
-const { GENERATION_FOLDER_NAME } = require('./constants');
 
 const getJsonData = async (filePath) => {
   return JSON.parse(fs.readFileSync(filePath));
 };
 
-const json2xlsx = async ({ localesFolderPath, config }) => {
-  const localeSubFolders = fs.readdirSync(localesFolderPath);
+const json2xlsx = async ({ inputPath, outputPath, config }) => {
+  const localeSubFolders = fs.readdirSync(inputPath);
 
   if (!localeSubFolders.length) {
     throw Error('No locales found');
@@ -16,17 +15,17 @@ const json2xlsx = async ({ localesFolderPath, config }) => {
 
   const defaultLocale = localeSubFolders[0];
   const restLocales = localeSubFolders.filter((folder) => folder !== defaultLocale);
-  const defaultLocaleFiles = fs.readdirSync(`${localesFolderPath}/${defaultLocale}`);
+  const defaultLocaleFiles = fs.readdirSync(`${inputPath}/${defaultLocale}`);
   const { keyTitle = 'Translation Key', width = 80 } = config?.column || {};
   const workbook = XLSX.utils.book_new();
 
   for (const file of defaultLocaleFiles) {
-    const jsonData = await getJsonData(`${localesFolderPath}/${defaultLocale}/${file}`);
+    const jsonData = await getJsonData(`${inputPath}/${defaultLocale}/${file}`);
     const flattenedObject = flattenObject(jsonData);
     const data = Object.entries(flattenedObject).map(([key, value]) => ({ [keyTitle]: key, [defaultLocale]: value }));
 
     for (const otherLocale of restLocales) {
-      const jsonData = await getJsonData(`${localesFolderPath}/${otherLocale}/${file}`);
+      const jsonData = await getJsonData(`${inputPath}/${otherLocale}/${file}`);
       const flattenedObject = flattenObject(jsonData);
       Object.entries(flattenedObject).forEach(([key, value]) => {
         const foundIndex = data.findIndex((item) => item[keyTitle] === key);
@@ -40,8 +39,8 @@ const json2xlsx = async ({ localesFolderPath, config }) => {
   }
 
   const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' });
+  fs.writeFileSync(`${outputPath}/locales.xlsx`, buffer);
 
-  fs.writeFileSync(__dirname + `/${GENERATION_FOLDER_NAME}/locales.xlsx`, buffer);
   console.log('File saved!');
 };
 
