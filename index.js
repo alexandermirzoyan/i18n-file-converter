@@ -53,7 +53,7 @@ const json2xlsx = async ({ inputPath, outputPath, config }) => {
   console.log('File saved!');
 };
 
-const xlsx2json = async ({ inputPath, outputPath, config }) => {
+const xlsx2json = async ({ inputPath, outputPath }) => {
   const workbook = XLSX.readFile(inputPath);
   const keyTitle = 'Key';
 
