@@ -4,14 +4,10 @@ const { GENERATION_FOLDER_NAME } = require('../constants');
 
 xlsx2json({
   inputPath: path.resolve(__dirname, `../${GENERATION_FOLDER_NAME}/locales.xlsx`),
+  outputPath: path.resolve(__dirname, `../${GENERATION_FOLDER_NAME}/locales`),
   config: {
     column: {
       keyTitle: 'Key',
-      columnTitlesAndLocaleCodes: {
-        'English Translation': 'en',
-        'Arabic Translation': 'ar',
-        'Spanish Translation': 'es',
-      },
     },
   },
 });

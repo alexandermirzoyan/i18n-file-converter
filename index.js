@@ -1,5 +1,7 @@
 const fs = require('fs');
+const fsp = require('fs/promises');
 const XLSX = require('xlsx');
+
 const { flattenObject } = require('./utils/flattenObject');
 const { deepenObject } = require('./utils/deepenObject');
 
@@ -40,14 +42,19 @@ const json2xlsx = async ({ inputPath, outputPath, config }) => {
   }
 
   const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' });
-  fs.writeFileSync(`${outputPath}/locales.xlsx`, buffer);
+
+  if (!fs.existsSync(outputPath)) {
+    await fsp.mkdir(outputPath, { recursive: true });
+  }
+
+  await fsp.writeFile(`${outputPath}/locales.xlsx`, buffer);
 
   console.log('File saved!');
 };
 
-const xlsx2json = ({ inputPath, config }) => {
+const xlsx2json = async ({ inputPath, outputPath, config }) => {
   const workbook = XLSX.readFile(inputPath);
-  const { keyTitle, columnTitlesAndLocaleCodes } = config?.column || {};
+  const { keyTitle } = config?.column || {};
 
   for (const sheetName of workbook.SheetNames) {
     const locales = {};
@@ -67,13 +74,19 @@ const xlsx2json = ({ inputPath, config }) => {
     });
 
     for (const locale in locales) {
+      const dirPath = `${outputPath}/${locale}`;
       const deepenedObject = deepenObject(locales[locale]);
-      console.log(deepenedObject);
-    }
+      const buffer = Buffer.from(JSON.stringify(deepenedObject, null, 2));
 
-    console.log('locales :: ', locales);
-    console.log('=========');
+      if (!fs.existsSync(dirPath)) {
+        await fsp.mkdir(dirPath, { recursive: true });
+      }
+
+      await fsp.writeFile(`${outputPath}/${locale}/${sheetName}`, buffer);
+    }
   }
+  
+  console.log('Files saved!');
 };
 
 module.exports = { xlsx2json, json2xlsx };
