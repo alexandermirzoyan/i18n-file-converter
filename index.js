@@ -19,8 +19,9 @@ const json2xlsx = async ({ inputPath, outputPath, config }) => {
   const defaultLocale = localeSubFolders[0];
   const restLocales = localeSubFolders.filter((folder) => folder !== defaultLocale);
   const defaultLocaleFiles = fs.readdirSync(`${inputPath}/${defaultLocale}`);
-  const { keyTitle = 'Translation Key', width = 80 } = config?.column || {};
+  const { width = 80 } = config?.column || {};
   const workbook = XLSX.utils.book_new();
+  const keyTitle = 'Key';
 
   for (const file of defaultLocaleFiles) {
     const jsonData = await getJsonData(`${inputPath}/${defaultLocale}/${file}`);
@@ -54,7 +55,7 @@ const json2xlsx = async ({ inputPath, outputPath, config }) => {
 
 const xlsx2json = async ({ inputPath, outputPath, config }) => {
   const workbook = XLSX.readFile(inputPath);
-  const { keyTitle } = config?.column || {};
+  const keyTitle = 'Key';
 
   for (const sheetName of workbook.SheetNames) {
     const locales = {};

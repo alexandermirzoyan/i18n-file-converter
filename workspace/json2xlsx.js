@@ -6,6 +6,6 @@ json2xlsx({
   inputPath: path.resolve(__dirname, '../locales'),
   outputPath: path.resolve(__dirname, `../${GENERATION_FOLDER_NAME}`),
   config: {
-    column: { keyTitle: 'Key', width: 80 },
+    column: { width: 80 },
   },
 });
