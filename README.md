@@ -25,7 +25,7 @@ Ever faced to a problem when sending i18n file content to a customer for getting
 
 We all know the pain when developers like to work with `.json` files but the customers prefer more user-friendly ways to work with them like `.xlsx`
 
-With this library you can easily convert all your `.json` files into `.xlsx` send to a customer and after getting translated file back you can convert it back to `.json` file.
+With this library you can easily convert all your `.json` files into `.xlsx` send to a customer and after getting translated file back convert it to `.json` file again.
 
 
 ## How To Use
@@ -37,7 +37,7 @@ $ npm install i18n-file-converter
 
 This package comes with two functions `json2xlsx()` and `xlsx2json()`.
 
-Example of generating `.xlsx` file from the `/locales` folder.
+## json2xlsx()
 
 ```
 json2xlsx({
@@ -49,7 +49,7 @@ json2xlsx({
 });
 ```
 
-Example of generating `.json` files back from `.xlsx` file.
+## xlsx2json()
 
 ```
 xlsx2json({
@@ -58,6 +58,13 @@ xlsx2json({
 });
 ```
 
+## API
+
+| Property              | Type                                                                                               | Default | Description                                                                                             |
+|-----------------------|----------------------------------------------------------------------------------------------------|---------|---------------------------------------------------------------------------------------------------------|
+| inputPath             | String                                                                                             | -       | Specify `/locales` path at `json2xlsx()`. For `xlsx2json()` specify `locales.xlsx` file.                |
+| outputPath            | String                                                                                             | -       | Specify the output directory path.                                                                      |
+| config.column.width   | Number                                                                                             | 80      | Style columns width when generating `.xlsx` file. NOTE: This property is accepted only at `json2xlsx()` |
 
 ## Credits
 
