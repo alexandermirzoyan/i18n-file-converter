@@ -1,7 +1,7 @@
 
 <h1 align="center">
   <br>
-  <a href="https://github.com/alexandermirzoyan/i18n-file-converter"><img src="/images/logo.png" alt="i18n" width="200"></a>
+  <a href="https://github.com/alexandermirzoyan/i18n-file-converter"><img src="./images/logo.png" alt="i18n" width="200"></a>
   <br>
   i18n-file-converter
   <br>
@@ -17,7 +17,7 @@
   <a href="#license">License</a>
 </p>
 
-![screenshot](/images/intro.gif)
+![screenshot](./images/intro.gif)
 
 ## Motivation
 
