@@ -1,7 +1,7 @@
 {
   "name": "i18n-file-converter",
   "version": "1.0.0",
-  "description": "",
+  "description": "Generate .xlsx files from .json and back with ease",
   "main": "index.js",
   "scripts": {
     "generate-xlsx": "node workspace/json2xlsx.js",
