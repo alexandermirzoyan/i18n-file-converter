@@ -9,10 +9,9 @@
 <h4 align="center">Generate .xlsx files from .json and back with ease</h4>
 
 <p align="center">
-  <a href="#key-features">Motivation</a> •
+  <a href="#motivation">Motivation</a> •
   <a href="#how-to-use">How To Use</a> •
   <a href="#credits">Credits</a> •
-  <a href="#related">Related</a> •
   <a href="#license">License</a>
 </p>
 
